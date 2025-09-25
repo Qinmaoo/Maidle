@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import { Button, Divider, Flex, Typography, Select } from "antd";
-import { ArrowRightOutlined, StarFilled } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  StarFilled,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  MinusOutlined,
+  DownOutlined,
+  UpOutlined,
+} from "@ant-design/icons";
 
 const { Text, Title } = Typography;
 
@@ -22,8 +30,8 @@ const MAIMAI_VERSION_LIST = [
   "Universe+",
   "Festival",
   "Festival+",
-  "Buddies",
-  "Buddies+",
+  "BUDDiES",
+  "BUDDiES+",
   "Prism",
   "Prism+",
   "CiRCLE",
@@ -35,14 +43,29 @@ const TABLE_HEADERS = [
   { title: "Category", type: "text", width: "10%" },
   { title: "Artist", type: "text", width: "30%" },
   { title: "BPM", type: "number", width: "10%" },
-  { title: "Version", type: "number", width: "10%" },
+  { title: "Version", type: "version", width: "10%" },
 ];
+
+const GOAL_GUESS = {
+  song: "Overjoy Overdose",
+  image:
+    "https://thumbs.dreamstime.com/b/cute-cat-portrait-square-photo-beautiful-white-closeup-105311158.jpg",
+  level: "14.2",
+  category: "Pops & Anime",
+  artist: "Luna Fozer",
+  bpm: 220,
+  version: "Prism+",
+
+  value: "overjoy-overdose",
+  difficulty: "master",
+  type: "DX",
+};
 
 const chartOptions = [
   {
     song: "Overjoy Overdose",
     image:
-      "https://thumbs.dreamstime.com/b/cute-cat-portrait-square-photo-beautiful-white-closeup-105311158.jpg",
+      "https://dp4p6x0xfi5o9.cloudfront.net/maimai/img/cover/35f7753bd0fd0f35e5209f4f7cd6e4aece12473f33001419fb894f1aee69c62b.png",
     level: "14.2",
     category: "Pops & Anime",
     artist: "Luna Fozer",
@@ -50,6 +73,20 @@ const chartOptions = [
     version: "Prism+",
 
     value: "overjoy-overdose",
+    difficulty: "master",
+    type: "DX",
+  },
+  {
+    song: "Moon of Noon",
+    image:
+      "https://dp4p6x0xfi5o9.cloudfront.net/maimai/img/cover/51323f3bc8073d991fca4bb8c78c21eaff445cd57d7e2971d8112820fe93656e.png",
+    level: "14.4",
+    category: "maimai",
+    artist: "Sampling masters MEGA",
+    bpm: 240,
+    version: "Finale",
+
+    value: "Moon of Noon",
     difficulty: "master",
     type: "DX",
   },
@@ -192,17 +229,16 @@ const SearchBar = ({ onSubmit }) => {
           onBlur={() => setEditing(false)}
         />
       )}
-      <Button
-        type="primary"
-        icon={<ArrowRightOutlined />}
-        color="default"
-        variant="solid"
+      <Flex
+        align="center"
+        justify="center"
         style={{
           height: "100%",
-          width: "15%",
-          padding: 0,
-          fontSize: 32,
-          color: "white",
+          aspectRatio: "1",
+          borderRadius: 8,
+          background: "#222",
+          cursor: "pointer",
+          transition: "background 0.2s ease",
         }}
         onClick={() => {
           const selected =
@@ -213,39 +249,98 @@ const SearchBar = ({ onSubmit }) => {
             setValue(null);
           }
         }}
-      />
+        onMouseEnter={(e) => (e.currentTarget.style.background = "#333")}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "#222")}
+      >
+        <ArrowRightOutlined style={{ fontSize: 32, color: "white" }} />
+      </Flex>
     </Flex>
   );
 };
 
-const GuessItem = ({ item, width, aspect, type }) => {
+const getVersionOrder = (version) => {
+  const idx = MAIMAI_VERSION_LIST.findIndex(
+    (v) => v.toLowerCase() === (version || "").toLowerCase()
+  );
+  return idx === -1 ? Infinity : idx;
+};
+
+const getNumberComparisonIcon = (item, goalItem, type) => {
+  if (type === "number") {
+    const numItem = parseFloat(item);
+    const numGoal = parseFloat(goalItem);
+    if (isNaN(numItem) || isNaN(numGoal))
+      return <MinusOutlined style={{ color: "#fff" }} />;
+    if (numItem === numGoal) return <MinusOutlined style={{ color: "#fff" }} />;
+    if (numItem > numGoal)
+      return <DownOutlined style={{ color: "#ffffffff" }} />;
+    return <UpOutlined style={{ color: "#ffffffff" }} />;
+  }
+  if (type === "version") {
+    const idxItem = getVersionOrder(item);
+    const idxGoal = getVersionOrder(goalItem);
+    if (idxItem === Infinity || idxGoal === Infinity)
+      return <MinusOutlined style={{ color: "#fff" }} />;
+    if (idxItem === idxGoal) return <MinusOutlined style={{ color: "#fff" }} />;
+
+    if (idxItem > idxGoal)
+      return <DownOutlined style={{ color: "#ffffffff" }} />;
+    return <UpOutlined style={{ color: "#ffffffff" }} />;
+  }
+  return null;
+};
+
+const GuessItem = ({ item, width, aspect, type, goalItem, guess }) => {
+  console.log(item, goalItem);
   return (
     <Flex
       align="center"
       justify="center"
       style={{
         width,
-        ...(aspect ? { aspectRatio: aspect } : { height: "100%" }),
-        border: "1px solid #ccc",
+        ...(aspect ? { aspectRatio: aspect } : undefined),
+        background: item == goalItem ? "#0ebb0eff" : "#e6342eff",
+        boxSizing: "border-box",
+        padding: 4,
         minWidth: 0,
         borderRadius: 8,
       }}
     >
       {type === "image" ? (
-        <img
-          src={item}
+        <Flex
+          justify="center"
+          align="center"
           style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
             borderRadius: 8,
+            margin: -4,
+            boxSizing: "border-box",
+            border:
+              guess.difficulty === "master"
+                ? "solid 8px purple"
+                : "solid 8px lightpurple",
           }}
-        />
-      ) : type === "number" ? (
-        <Text>{item}</Text>
+        >
+          <img
+            src={item}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        </Flex>
+      ) : type === "number" || type === "version" ? (
+        <Flex vertical gap="small" align="center" style={{ width: "100%" }}>
+          <Text strong style={{ color: "white" }}>
+            {item}
+          </Text>
+          {getNumberComparisonIcon(item, goalItem, type)}
+        </Flex>
       ) : (
         <Text
+          strong
           style={{
+            color: "white",
             width: "100%",
             textAlign: "center",
             overflow: "hidden",
@@ -269,6 +364,14 @@ const Guess = ({ guess }) => {
     guess.bpm,
     guess.version,
   ];
+  const goalValues = [
+    GOAL_GUESS.song,
+    GOAL_GUESS.level,
+    GOAL_GUESS.category,
+    GOAL_GUESS.artist,
+    GOAL_GUESS.bpm,
+    GOAL_GUESS.version,
+  ];
   return (
     <Flex
       justify="space-between"
@@ -283,7 +386,9 @@ const Guess = ({ guess }) => {
           key={header.title}
           item={header.type === "image" ? guess.image : guessValues[idx]}
           width={header.width}
-          aspect={header.title === "Artist" ? undefined : "1"}
+          aspect={header.title === "Artist" ? "3" : "1"}
+          goalItem={goalValues[idx]}
+          guess={guess}
           type={header.type}
         />
       ))}
@@ -293,7 +398,7 @@ const Guess = ({ guess }) => {
 
 const TableHeader = ({ items }) => {
   return (
-    <Flex justify="space-between" style={{ width: "90%" }}>
+    <Flex justify="space-between" style={{ width: "90%", marginBottom: 8 }}>
       {items.map((item, index) => (
         <Flex
           vertical
@@ -324,16 +429,15 @@ const GuessTable = ({ guesses }) => {
 const MaidleGame = () => {
   const [guesses, setGuesses] = useState([
     {
-      song: "Test value",
+      song: "サンバディ！",
       image:
-        "https://thumbs.dreamstime.com/b/cute-cat-portrait-square-photo-beautiful-white-closeup-105311158.jpg",
-      level: "14.0",
-      category: "G&V",
-      artist: "Takenobu Mistuyoshi",
-      bpm: 12,
-      version: "Buddies",
-
-      value: "overjoy-overdose",
+        "https://dp4p6x0xfi5o9.cloudfront.net/maimai/img/cover/137a8bcc05be07d995c108b39b153ffa6ca3130c0245ac7a34236a01bad08694.png",
+      level: "13.2",
+      category: "maimai",
+      artist: "光吉猛修",
+      bpm: 136,
+      version: "BUDDiES",
+      value: "サンバディ！",
       difficulty: "master",
       type: "DX",
     },
@@ -341,8 +445,8 @@ const MaidleGame = () => {
   return (
     <Flex vertical align="center" gap="middle" style={{ padding: 24 }}>
       <Flex justify="center" align="center" gap="small">
-        <StarFilled style={{ fontSize: 32, color: "#08c" }} />
-        <Text strong style={{ fontSize: 32 }}>
+        <StarFilled style={{ fontSize: 64, color: "#ffc23eff" }} />
+        <Text strong style={{ fontSize: 64, marginTop: -16 }}>
           maiDLE
         </Text>
       </Flex>
