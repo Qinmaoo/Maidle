@@ -5,8 +5,6 @@ import { Button, Divider, Flex, Typography, Select } from "antd";
 import {
   ArrowRightOutlined,
   StarFilled,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
   MinusOutlined,
   DownOutlined,
   UpOutlined,
@@ -16,24 +14,30 @@ const { Text, Title } = Typography;
 
 const MAIMAI_VERSION_LIST = [
   "maimai",
+  "maimai PLUS",
   "GreeN",
+  "GreeN PLUS",
   "ORANGE",
+  "ORANGE PLUS",
   "PiNK",
+  "PiNK PLUS",
   "MURASAKi",
+  "MURASAKi PLUS",
   "MiLK",
+  "MiLK PLUS",
   "FiNALE",
-  "DX",
-  "DX+",
+  "maimaiでらっくす",
+  "maimaiでらっくす PLUS",
   "Splash",
-  "Splash+",
-  "Universe",
-  "Universe+",
-  "Festival",
-  "Festival+",
+  "Splash PLUS",
+  "UNiVERSE",
+  "UNiVERSE PLUS",
+  "FESTiVAL",
+  "FESTiVAL PLUS",
   "BUDDiES",
-  "BUDDiES+",
-  "Prism",
-  "Prism+",
+  "BUDDiES PLUS",
+  "PRiSM",
+  "PRiSM PLUS",
   "CiRCLE",
 ];
 
@@ -45,218 +49,6 @@ const TABLE_HEADERS = [
   { title: "BPM", type: "number", width: "10%" },
   { title: "Version", type: "version", width: "10%" },
 ];
-
-const GOAL_GUESS = {
-  song: "Overjoy Overdose",
-  image:
-    "https://thumbs.dreamstime.com/b/cute-cat-portrait-square-photo-beautiful-white-closeup-105311158.jpg",
-  level: "14.2",
-  category: "Pops & Anime",
-  artist: "Luna Fozer",
-  bpm: 220,
-  version: "Prism+",
-
-  value: "overjoy-overdose",
-  difficulty: "master",
-  type: "DX",
-};
-
-const chartOptions = [
-  {
-    song: "Overjoy Overdose",
-    image:
-      "https://dp4p6x0xfi5o9.cloudfront.net/maimai/img/cover/35f7753bd0fd0f35e5209f4f7cd6e4aece12473f33001419fb894f1aee69c62b.png",
-    level: "14.2",
-    category: "Pops & Anime",
-    artist: "Luna Fozer",
-    bpm: 220,
-    version: "Prism+",
-
-    value: "overjoy-overdose",
-    difficulty: "master",
-    type: "DX",
-  },
-  {
-    song: "Moon of Noon",
-    image:
-      "https://dp4p6x0xfi5o9.cloudfront.net/maimai/img/cover/51323f3bc8073d991fca4bb8c78c21eaff445cd57d7e2971d8112820fe93656e.png",
-    level: "14.4",
-    category: "maimai",
-    artist: "Sampling masters MEGA",
-    bpm: 240,
-    version: "Finale",
-
-    value: "Moon of Noon",
-    difficulty: "master",
-    type: "DX",
-  },
-];
-
-const renderOption = (option) => (
-  <Flex align="center" gap={8}>
-    <img
-      src={option.image}
-      alt={option.label}
-      style={{ width: 32, height: 32, borderRadius: 4, objectFit: "cover" }}
-    />
-    <div>
-      <Flex gap="small">
-        <Text strong>{option.song}</Text>
-        <span
-          style={{
-            background: "#a0a",
-            color: "#fff",
-            borderRadius: 4,
-            fontWeight: "bold",
-            fontSize: 12,
-            padding: "2px 6px",
-            marginRight: 4,
-          }}
-        >
-          {option.difficulty?.toUpperCase()}
-        </span>
-        <span
-          style={{
-            background: "#ffe066",
-            color: "#333",
-            borderRadius: 4,
-            fontWeight: "bold",
-            fontSize: 12,
-            padding: "2px 6px",
-          }}
-        >
-          {option.type}
-        </span>
-      </Flex>
-      <div style={{ fontSize: 12, color: "#888" }}>{option.artist}</div>
-    </div>
-  </Flex>
-);
-
-const SearchBar = ({ onSubmit }) => {
-  const [value, setValue] = useState();
-  const [editing, setEditing] = useState(false);
-
-  const opt =
-    chartOptions.find((o) => o.value === (value?.value || value)) || null;
-
-  return (
-    <Flex
-      align="center"
-      justify="center"
-      gap="middle"
-      style={{ width: "55%", height: 90 }}
-    >
-      {!editing && opt ? (
-        <Flex
-          gap="middle"
-          style={{
-            width: "75%",
-            height: "100%",
-            border: "solid 2px #f4f4f4",
-            borderRadius: 8,
-            boxSizing: "border-box",
-            padding: 8,
-          }}
-          align="center"
-          onClick={() => setEditing(true)}
-        >
-          <img
-            src={opt.image}
-            alt={opt.song}
-            style={{
-              height: "100%",
-              borderRadius: 8,
-            }}
-          />
-
-          <Flex vertical justify="space-between" style={{ height: "100%" }}>
-            <Flex>
-              <span
-                style={{
-                  background: "#a0a",
-                  color: "#fff",
-                  borderRadius: 4,
-                  fontWeight: "bold",
-                  fontSize: 12,
-                  padding: "2px 8px",
-                  marginRight: 4,
-                }}
-              >
-                {opt.difficulty?.toUpperCase()}
-              </span>
-              <span
-                style={{
-                  background: "#ffe066",
-                  color: "#333",
-                  borderRadius: 4,
-                  fontWeight: "bold",
-                  fontSize: 12,
-                  padding: "2px 8px",
-                }}
-              >
-                {opt.type}
-              </span>
-            </Flex>
-            <Flex vertical>
-              <Text type="secondary" style={{ marginBottom: -8 }}>
-                {opt.artist}
-              </Text>
-              <Text strong style={{ fontSize: 20, margin: 0 }}>
-                {opt.song}
-              </Text>
-            </Flex>
-          </Flex>
-        </Flex>
-      ) : (
-        <Select
-          showSearch
-          value={value}
-          placeholder="Search Chart"
-          style={{ width: "75%", height: "100%" }}
-          options={chartOptions}
-          labelInValue
-          onChange={(v) => {
-            setValue(v);
-            setEditing(false);
-          }}
-          filterOption={(input, option) =>
-            (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-          }
-          optionRender={(option) => renderOption(option.data)}
-          dropdownStyle={{ minWidth: 350 }}
-          autoFocus
-          onBlur={() => setEditing(false)}
-        />
-      )}
-      <Flex
-        align="center"
-        justify="center"
-        style={{
-          height: "100%",
-          aspectRatio: "1",
-          borderRadius: 8,
-          background: "#222",
-          cursor: "pointer",
-          transition: "background 0.2s ease",
-        }}
-        onClick={() => {
-          const selected =
-            chartOptions.find((o) => o.value === (value?.value || value)) ||
-            null;
-          if (selected) {
-            onSubmit(selected);
-            setValue(null);
-          }
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "#333")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "#222")}
-      >
-        <ArrowRightOutlined style={{ fontSize: 32, color: "white" }} />
-      </Flex>
-    </Flex>
-  );
-};
 
 const getVersionOrder = (version) => {
   const idx = MAIMAI_VERSION_LIST.findIndex(
@@ -290,8 +82,172 @@ const getNumberComparisonIcon = (item, goalItem, type) => {
   return null;
 };
 
+const renderOption = (option) => (
+  <Flex align="center" gap={8}>
+    <img
+      src={option.data.image}
+      alt={option.data.label}
+      style={{ width: 32, height: 32, borderRadius: 4, objectFit: "cover" }}
+    />
+    <div>
+      <Flex gap="small">
+        <Text strong>{option.data.song}</Text>
+        <span
+          style={{
+            background: "#a0a",
+            color: "#fff",
+            borderRadius: 4,
+            fontWeight: "bold",
+            fontSize: 12,
+            padding: "2px 6px",
+            marginRight: 4,
+          }}
+        >
+          {option.data.difficulty?.toUpperCase()}
+        </span>
+        <span
+          style={{
+            background: "#ffe066",
+            color: "#333",
+            borderRadius: 4,
+            fontWeight: "bold",
+            fontSize: 12,
+            padding: "2px 6px",
+          }}
+        >
+          {option.data.type?.toUpperCase()}
+        </span>
+      </Flex>
+      <div style={{ fontSize: 12, color: "#888" }}>{option.data.artist}</div>
+    </div>
+  </Flex>
+);
+
+const SearchBar = ({ onSubmit, charts }) => {
+  const [editing, setEditing] = useState(true);
+  const [selectedChart, setSelectedChart] = useState(null);
+
+  const options = charts.map((chart) => ({
+    value: chart.index,
+    label: chart.song,
+    data: chart,
+  }));
+
+  return (
+    <Flex
+      align="center"
+      justify="center"
+      gap="middle"
+      style={{ width: "55%", height: 90 }}
+    >
+      {!editing && selectedChart ? (
+        <Flex
+          gap="middle"
+          style={{
+            width: "75%",
+            height: "100%",
+            border: "solid 2px #f4f4f4",
+            borderRadius: 8,
+            boxSizing: "border-box",
+            padding: 8,
+          }}
+          align="center"
+          onClick={() => setEditing(true)}
+        >
+          <img
+            src={selectedChart.image}
+            alt={selectedChart.song}
+            style={{
+              height: "100%",
+              borderRadius: 8,
+            }}
+          />
+
+          <Flex vertical justify="space-between" style={{ height: "100%" }}>
+            <Flex>
+              <span
+                style={{
+                  background: "#a0a",
+                  color: "#fff",
+                  borderRadius: 4,
+                  fontWeight: "bold",
+                  fontSize: 12,
+                  padding: "2px 8px",
+                  marginRight: 4,
+                }}
+              >
+                {selectedChart.difficulty?.toUpperCase()}
+              </span>
+              <span
+                style={{
+                  background: "#ffe066",
+                  color: "#333",
+                  borderRadius: 4,
+                  fontWeight: "bold",
+                  fontSize: 12,
+                  padding: "2px 8px",
+                }}
+              >
+                {selectedChart.type?.toUpperCase()}
+              </span>
+            </Flex>
+            <Flex vertical>
+              <Text type="secondary" style={{ marginBottom: -8 }}>
+                {selectedChart.artist}
+              </Text>
+              <Text strong style={{ fontSize: 20, margin: 0 }}>
+                {selectedChart.song}
+              </Text>
+            </Flex>
+          </Flex>
+        </Flex>
+      ) : (
+        <Select
+          showSearch
+          value={selectedChart?.index}
+          placeholder="Search Chart"
+          style={{ width: "75%", height: "100%" }}
+          options={options}
+          onChange={(v) => {
+            setEditing(false);
+            setSelectedChart(charts.find((chart) => chart.index === v));
+          }}
+          filterOption={(input, option) =>
+            option.data.song.toLowerCase().includes(input.toLowerCase())
+          }
+          optionRender={(option) => renderOption(option.data)}
+          dropdownStyle={{ minWidth: 350 }}
+          autoFocus
+          onBlur={() => setEditing(false)}
+        />
+      )}
+      <Flex
+        align="center"
+        justify="center"
+        style={{
+          height: "100%",
+          aspectRatio: "1",
+          borderRadius: 8,
+          background: "#222",
+          cursor: "pointer",
+          transition: "background 0.2s ease",
+        }}
+        onClick={() => {
+          if (selectedChart) {
+            onSubmit(selectedChart);
+            setSelectedChart(null);
+          }
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = "#333")}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "#222")}
+      >
+        <ArrowRightOutlined style={{ fontSize: 32, color: "white" }} />
+      </Flex>
+    </Flex>
+  );
+};
+
 const GuessItem = ({ item, width, aspect, type, goalItem, guess }) => {
-  console.log(item, goalItem);
   return (
     <Flex
       align="center"
@@ -311,27 +267,50 @@ const GuessItem = ({ item, width, aspect, type, goalItem, guess }) => {
           justify="center"
           align="center"
           style={{
+            position: "relative",
             borderRadius: 8,
             margin: -4,
             boxSizing: "border-box",
             border:
               guess.difficulty === "master"
-                ? "solid 8px purple"
-                : "solid 8px lightpurple",
+                ? "solid 6px #af0dafff"
+                : "solid 6px #e98ee9ff",
+            overflow: "hidden",
+            boxShadow:
+              guess.difficulty === "master"
+                ? "inset 0 0 0 4px #af0dafff"
+                : "inset 0 0 0 4px #e98ee9ff",
           }}
         >
+          <div
+            style={{
+              position: "absolute",
+              top: 4,
+              left: 4,
+              background: "#c2b116ff",
+              color: "#fff",
+              fontSize: 12,
+              fontWeight: "bold",
+              padding: "2px 6px",
+              borderRadius: 4,
+              zIndex: 1,
+            }}
+          >
+            {guess.type?.toUpperCase()}
+          </div>
+
           <img
             src={item}
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "cover",
+              borderRadius: 4,
             }}
           />
         </Flex>
       ) : type === "number" || type === "version" ? (
         <Flex vertical gap="small" align="center" style={{ width: "100%" }}>
-          <Text strong style={{ color: "white" }}>
+          <Text strong style={{ color: "white", textAlign: "center" }}>
             {item}
           </Text>
           {getNumberComparisonIcon(item, goalItem, type)}
@@ -346,6 +325,7 @@ const GuessItem = ({ item, width, aspect, type, goalItem, guess }) => {
             overflow: "hidden",
             whiteSpace: "nowrap",
             textOverflow: "ellipsis",
+            textAlign: "center",
           }}
         >
           {item}
@@ -355,7 +335,8 @@ const GuessItem = ({ item, width, aspect, type, goalItem, guess }) => {
   );
 };
 
-const Guess = ({ guess }) => {
+const Guess = ({ guess, goalGuess }) => {
+  if (!goalGuess) return null;
   const guessValues = [
     guess.song,
     guess.level,
@@ -365,12 +346,12 @@ const Guess = ({ guess }) => {
     guess.version,
   ];
   const goalValues = [
-    GOAL_GUESS.song,
-    GOAL_GUESS.level,
-    GOAL_GUESS.category,
-    GOAL_GUESS.artist,
-    GOAL_GUESS.bpm,
-    GOAL_GUESS.version,
+    goalGuess.song,
+    goalGuess.level,
+    goalGuess.category,
+    goalGuess.artist,
+    goalGuess.bpm,
+    goalGuess.version,
   ];
   return (
     <Flex
@@ -415,33 +396,77 @@ const TableHeader = ({ items }) => {
   );
 };
 
-const GuessTable = ({ guesses }) => {
+const GuessTable = ({ guesses, goalGuess }) => {
   return (
     <Flex vertical gap="small" align="center" style={{ width: "100%" }}>
       <TableHeader items={TABLE_HEADERS} />
       {guesses.map((guess, index) => (
-        <Guess key={index} guess={guess} />
+        <Guess key={index} guess={guess} goalGuess={goalGuess} />
       ))}
     </Flex>
   );
 };
 
 const MaidleGame = () => {
-  const [guesses, setGuesses] = useState([
-    {
-      song: "サンバディ！",
-      image:
-        "https://dp4p6x0xfi5o9.cloudfront.net/maimai/img/cover/137a8bcc05be07d995c108b39b153ffa6ca3130c0245ac7a34236a01bad08694.png",
-      level: "13.2",
-      category: "maimai",
-      artist: "光吉猛修",
-      bpm: 136,
-      version: "BUDDiES",
-      value: "サンバディ！",
-      difficulty: "master",
-      type: "DX",
-    },
-  ]);
+  const [guesses, setGuesses] = useState([]);
+  const [charts, setCharts] = useState([]);
+  const [goalGuess, setGoalGuess] = useState(null);
+
+  async function getData() {
+    const url = "https://dp4p6x0xfi5o9.cloudfront.net/maimai/data.json";
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+      const result = await response.json();
+
+      return result.songs;
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  useEffect(() => {
+    getData().then((data) => {
+      let charts = [];
+      let index = 1;
+      data.forEach((item) => {
+        const song = item.title;
+        const image =
+          "https://dp4p6x0xfi5o9.cloudfront.net/maimai/img/cover/" +
+          item.imageName;
+        const category = item.category;
+        const artist = item.artist;
+        const bpm = item.bpm;
+        const releaseVersion = item.version;
+        item.sheets.forEach((sheet) => {
+          const level = sheet.internalLevelValue;
+          const difficulty = sheet.difficulty;
+          const type = sheet.type;
+          const version = sheet.version;
+          if (difficulty === "master" || difficulty === "remaster") {
+            charts.push({
+              index: index++,
+              song: song,
+              image: image,
+              level: level,
+              category: category,
+              artist: artist,
+              bpm: bpm,
+              type: type,
+              difficulty: difficulty,
+              version: version ? version : releaseVersion,
+            });
+          }
+        });
+      });
+      setCharts(charts || []);
+      const newGoalGuess = charts[Math.floor(Math.random() * charts.length)];
+      setGoalGuess(newGoalGuess);
+    });
+  }, []);
+
   return (
     <Flex vertical align="center" gap="middle" style={{ padding: 24 }}>
       <Flex justify="center" align="center" gap="small">
@@ -451,13 +476,14 @@ const MaidleGame = () => {
         </Text>
       </Flex>
       <SearchBar
+        charts={charts}
+        loading={charts.length === 0}
         onSubmit={(guess) => {
-          setGuesses([guess, ...guesses]);
-          console.log([guess, ...guesses]);
+          const newGuesses = [guess, ...guesses];
+          setGuesses(newGuesses);
         }}
       />
-      <Divider />
-      <GuessTable guesses={guesses} />
+      <GuessTable guesses={guesses} goalGuess={goalGuess} />
     </Flex>
   );
 };
