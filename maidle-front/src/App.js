@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MaidleGame from './MaidleGame'; 
 import About from './About'; // Example: another page
+import { ConfigProvider } from 'antd';
+import config from './theme/light.ts';
 
 
 function App() {
@@ -16,15 +18,20 @@ function App() {
         console.error("There was an error fetching the tasks!", error);
       });
   }, []);
+
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/maidle" element={<MaidleGame/>} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </div>
-    </Router>
+    <ConfigProvider
+      theme={config}
+    >
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route path="/maidle" element={<MaidleGame/>} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+        </div>
+      </Router>
+    </ConfigProvider>
   );
 }
 
