@@ -63,7 +63,7 @@ const SearchBar = ({
       align="center"
       justify="center"
       gap="middle"
-      className="w-4/5 min-w-[320px] max-w-[600px] h-[64px]"
+      className="w-4/5 min-w-[400px] max-w-[600px] h-[64px]"
     >
       {!editing && selectedChart ? (
         <SearchBarChartDisplay

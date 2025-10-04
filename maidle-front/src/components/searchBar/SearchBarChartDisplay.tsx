@@ -15,7 +15,7 @@ export default function SearchBarChartDisplay({
     <Flex
       gap="middle"
       className="w-3/4 h-full border border-1 border-gray-100
-        rounded-md p-2 hover:bg-gray-50 cursor-pointer duration-100"
+        rounded-md p-2 hover:bg-gray-50 cursor-pointer duration-100 overflow-hidden"
       align="center"
       onClick={() => setEditing(true)}
     >
@@ -27,7 +27,7 @@ export default function SearchBarChartDisplay({
       <Flex
         vertical
         justify="space-between"
-        className="h-full gap-y-0.5 pt-1"
+        className="w-3/4 h-full gap-y-0.5 pt-1"
       >
         <Flex className="gap-x-1">
           <DifficultyChip difficulty={selectedChart.difficulty} />
@@ -37,7 +37,7 @@ export default function SearchBarChartDisplay({
           >
             {selectedChart.type?.toUpperCase()}
           </span>
-          <Text type="secondary" className="text-[8pt] max-w-[280px] overflow-hidden text-ellipsis text-nowrap">
+          <Text type="secondary" className="text-[8pt] w-full overflow-hidden text-ellipsis text-nowrap">
             ・ {selectedChart.artist}
           </Text>
         </Flex>
