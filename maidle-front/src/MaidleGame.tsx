@@ -3,16 +3,18 @@ import { useState, useEffect } from "react";
 import { Flex, Typography } from "antd";
 import { StarFilled } from "@ant-design/icons";
 import GuessTable from "./components/guessTable/GuessTable";
-import SearchBar from "./components/SearchBar";
+import SearchBar from "./components/searchBar/SearchBar";
+import { Chart, ChartApiData } from "./types/chart";
+import { Difficulty } from "./types/difficulty";
 
 const { Text } = Typography;
 
 const MaidleGame = () => {
-  const [guesses, setGuesses] = useState([]);
-  const [charts, setCharts] = useState([]);
-  const [goalGuess, setGoalGuess] = useState(null);
+  const [guesses, setGuesses] = useState<Chart[]>([]);
+  const [charts, setCharts] = useState<Chart[]>([]);
+  const [goalGuess, setGoalGuess] = useState<Chart | null>(null);
 
-  async function getData() {
+  async function getData(): Promise<ChartApiData[]> {
     const url = "https://dp4p6x0xfi5o9.cloudfront.net/maimai/data.json";
     try {
       const response = await fetch(url);
@@ -22,14 +24,15 @@ const MaidleGame = () => {
       const result = await response.json();
 
       return result.songs;
-    } catch (error) {
+    } catch (error: any) {
       console.error(error.message);
+      return []
     }
   }
 
   useEffect(() => {
     getData().then((data) => {
-      let charts = [];
+      const charts: Chart[] = [];
       let index = 1;
       data.forEach((item) => {
         const song = item.title;
@@ -42,10 +45,10 @@ const MaidleGame = () => {
         const releaseVersion = item.version;
         item.sheets.forEach((sheet) => {
           const level = sheet.internalLevelValue;
-          const difficulty = sheet.difficulty;
+          const difficulty: Difficulty = sheet.difficulty as Difficulty;
           const type = sheet.type;
           const version = sheet.version;
-          if (difficulty === "master" || difficulty === "remaster") {
+          if (difficulty === Difficulty.Master || difficulty === Difficulty.Remaster) {
             charts.push({
               index: index++,
               song: song,
@@ -63,7 +66,7 @@ const MaidleGame = () => {
       });
       setCharts(charts || []);
       const newGoalGuess = charts[Math.floor(Math.random() * charts.length)];
-      setGoalGuess(newGoalGuess);
+      setGoalGuess(newGoalGuess ?? null);
     });
   }, []);
 
@@ -77,9 +80,8 @@ const MaidleGame = () => {
       </Flex>
       <SearchBar
         charts={charts}
-        loading={charts.length === 0}
-        onSubmit={(guess) => {
-          const newGuesses = [guess, ...guesses];
+        onSubmit={(guess: Chart) => {
+          const newGuesses: Chart[] = [guess, ...guesses];
           setGuesses(newGuesses);
         }}
       />
