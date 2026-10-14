@@ -33,7 +33,12 @@ const StartScreen = () => {
         >
           Start
         </Button>
-        <Button size="middle" shape="round" block>
+        <Button 
+          size="middle"
+          shape="round"
+          block
+          onClick={() => navigate("/about")}
+        >
           About
         </Button>
       </Flex>
