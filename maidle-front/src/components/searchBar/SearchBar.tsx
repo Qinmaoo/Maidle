@@ -13,6 +13,13 @@ interface Option {
   data: Chart
 }
 
+export function matchesChartSearch(input: string, chart: Chart): boolean {
+  const query = input.toLowerCase();
+
+  return chart.song.toLowerCase().includes(query)
+    || chart.artist.toLowerCase().includes(query);
+}
+
 const renderOption = (option: Option) => (
   <Flex align="center" gap={8}>
     <img
@@ -87,7 +94,7 @@ const SearchBar = ({
             setSelectedChart(charts.find((chart) => chart.index === v) ?? null);
           }}
           filterOption={(input, option) =>
-            option?.data.song.toLowerCase().includes(input.toLowerCase()) ?? false
+            option?.data ? matchesChartSearch(input, option.data) : false
           }
           optionRender={(option) => renderOption(option.data)}
           dropdownStyle={{ minWidth: 350 }}
