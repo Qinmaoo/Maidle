@@ -70,6 +70,17 @@ describe("selectDailyChart", () => {
     expect(selectedFromOriginalOrder).toEqual(selectedFromReversedOrder);
   });
 
+  it("uses the chart ID to break otherwise equal sort keys", () => {
+    const equivalentCharts = [
+      { ...charts[0], id: "song-b:master:dx" },
+      { ...charts[0], id: "song-a:master:dx" },
+    ];
+
+    expect(selectDailyChart(equivalentCharts, "2026-10-15")).toEqual(
+      selectDailyChart([...equivalentCharts].reverse(), "2026-10-15"),
+    );
+  });
+
   it("returns null when no charts are available", () => {
     expect(selectDailyChart([], "2026-10-15")).toBeNull();
   });

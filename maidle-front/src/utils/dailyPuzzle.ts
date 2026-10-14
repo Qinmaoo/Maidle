@@ -41,6 +41,7 @@ function chartSortKey(chart: Chart): string {
     chart.bpm,
     chart.version,
     chart.image,
+    chart.id,
   ].join("\u0000");
 }
 

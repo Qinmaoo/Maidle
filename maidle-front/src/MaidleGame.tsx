@@ -6,7 +6,7 @@ import GuessTable from "./components/guessTable/GuessTable";
 import SearchBar from "./components/searchBar/SearchBar";
 import { Chart, ChartApiData } from "./types/chart";
 import { Difficulty } from "./types/difficulty";
-import { selectDailyChart } from "./utils/dailyPuzzle";
+import { getTokyoDateKey, selectDailyChart } from "./utils/dailyPuzzle";
 import {
   loadDailyGuesses,
   saveDailyGuesses,
@@ -18,6 +18,8 @@ const MaidleGame = () => {
   const [guesses, setGuesses] = useState<Chart[]>([]);
   const [charts, setCharts] = useState<Chart[]>([]);
   const [goalGuess, setGoalGuess] = useState<Chart | null>(null);
+  const [puzzleDate] = useState(() => getTokyoDateKey());
+  const [isPuzzleExpired, setIsPuzzleExpired] = useState(false);
 
   async function getData(): Promise<ChartApiData[]> {
     const url = "https://dp4p6x0xfi5o9.cloudfront.net/maimai/data.json";
@@ -71,10 +73,10 @@ const MaidleGame = () => {
         });
       });
       setCharts(charts || []);
-      setGoalGuess(selectDailyChart(charts));
-      setGuesses(loadDailyGuesses(charts));
+      setGoalGuess(selectDailyChart(charts, puzzleDate));
+      setGuesses(loadDailyGuesses(charts, puzzleDate));
     });
-  }, []);
+  }, [puzzleDate]);
 
   return (
     <Flex vertical align="center" gap="middle" style={{ padding: 24 }}>
@@ -86,12 +88,23 @@ const MaidleGame = () => {
       </Flex>
       <SearchBar
         charts={charts}
+        disabled={isPuzzleExpired}
         onSubmit={(guess: Chart) => {
+          if (getTokyoDateKey() !== puzzleDate) {
+            setIsPuzzleExpired(true);
+            return;
+          }
+
           const newGuesses: Chart[] = [guess, ...guesses];
           setGuesses(newGuesses);
-          saveDailyGuesses(newGuesses);
+          saveDailyGuesses(newGuesses, puzzleDate);
         }}
       />
+      {isPuzzleExpired && (
+        <Text type="secondary">
+          A new daily puzzle is available. Refresh to play it.
+        </Text>
+      )}
       <GuessTable guesses={guesses} goalGuess={goalGuess} />
     </Flex>
   );
