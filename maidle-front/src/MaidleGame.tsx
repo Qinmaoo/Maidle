@@ -6,6 +6,7 @@ import GuessTable from "./components/guessTable/GuessTable";
 import SearchBar from "./components/searchBar/SearchBar";
 import { Chart, ChartApiData } from "./types/chart";
 import { Difficulty } from "./types/difficulty";
+import { selectDailyChart } from "./utils/dailyPuzzle";
 
 const { Text } = Typography;
 
@@ -65,8 +66,7 @@ const MaidleGame = () => {
         });
       });
       setCharts(charts || []);
-      const newGoalGuess = charts[Math.floor(Math.random() * charts.length)];
-      setGoalGuess(newGoalGuess ?? null);
+      setGoalGuess(selectDailyChart(charts));
     });
   }, []);
 
