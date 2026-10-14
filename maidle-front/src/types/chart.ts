@@ -1,6 +1,7 @@
 import { Difficulty } from "./difficulty"
 
 export interface Chart {
+  id: string
   index: number
   song: string
   image: string
@@ -57,4 +58,3 @@ export interface ChartApiData {
   title: string
   version: string
 }
-

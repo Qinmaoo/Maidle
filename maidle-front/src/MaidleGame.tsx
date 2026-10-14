@@ -7,6 +7,10 @@ import SearchBar from "./components/searchBar/SearchBar";
 import { Chart, ChartApiData } from "./types/chart";
 import { Difficulty } from "./types/difficulty";
 import { selectDailyChart } from "./utils/dailyPuzzle";
+import {
+  loadDailyGuesses,
+  saveDailyGuesses,
+} from "./utils/dailyGameStorage";
 
 const { Text } = Typography;
 
@@ -51,6 +55,7 @@ const MaidleGame = () => {
           const version = sheet.version;
           if (difficulty === Difficulty.Master || difficulty === Difficulty.Remaster) {
             charts.push({
+              id: `${item.songId}:${difficulty}:${type}`,
               index: index++,
               song: song,
               image: image,
@@ -67,6 +72,7 @@ const MaidleGame = () => {
       });
       setCharts(charts || []);
       setGoalGuess(selectDailyChart(charts));
+      setGuesses(loadDailyGuesses(charts));
     });
   }, []);
 
@@ -83,6 +89,7 @@ const MaidleGame = () => {
         onSubmit={(guess: Chart) => {
           const newGuesses: Chart[] = [guess, ...guesses];
           setGuesses(newGuesses);
+          saveDailyGuesses(newGuesses);
         }}
       />
       <GuessTable guesses={guesses} goalGuess={goalGuess} />

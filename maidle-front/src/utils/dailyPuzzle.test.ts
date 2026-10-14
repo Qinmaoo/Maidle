@@ -4,6 +4,7 @@ import { getDailySeed, getTokyoDateKey, selectDailyChart } from "./dailyPuzzle";
 
 const charts: Chart[] = [
   {
+    id: "beta:master:dx",
     index: 1,
     song: "Beta",
     image: "beta.png",
@@ -16,6 +17,7 @@ const charts: Chart[] = [
     version: "PRiSM",
   },
   {
+    id: "alpha:master:std",
     index: 2,
     song: "Alpha",
     image: "alpha.png",
@@ -28,6 +30,7 @@ const charts: Chart[] = [
     version: "BUDDiES",
   },
   {
+    id: "gamma:remaster:dx",
     index: 3,
     song: "Gamma",
     image: "gamma.png",
