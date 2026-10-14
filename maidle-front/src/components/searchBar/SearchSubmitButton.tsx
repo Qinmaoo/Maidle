@@ -5,11 +5,13 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 export default function SearchSubmitButton({
   selectedChart,
   setSelectedChart,
-  onSubmit
+  onSubmit,
+  disabled = false,
 }: {
   selectedChart: Chart | null
   setSelectedChart: (chart: Chart | null) => void
-  onSubmit: (guess: Chart) => void
+  onSubmit: (guess: Chart) => boolean
+  disabled?: boolean
 }) {
   return (
     <Button
@@ -21,10 +23,12 @@ export default function SearchSubmitButton({
         cursor: "pointer",
         transition: "background 0.2s ease",
       }}
+      disabled={disabled}
       onClick={() => {
-        if (selectedChart) {
-          onSubmit(selectedChart);
-          setSelectedChart(null);
+        if (selectedChart && !disabled) {
+          if (onSubmit(selectedChart)) {
+            setSelectedChart(null);
+          }
         }
       }}
       onMouseEnter={(e) => (e.currentTarget.style.background = "#333")}

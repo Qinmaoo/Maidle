@@ -44,15 +44,19 @@ const renderOption = (option: Option) => (
 
 const SearchBar = ({
   onSubmit,
-  charts
+  charts,
+  guessedChartIds,
+  disabled = false,
 }: {
-  onSubmit: (guess: Chart) => void
+  onSubmit: (guess: Chart) => boolean
   charts: Chart[]
+  guessedChartIds: ReadonlySet<string>
+  disabled?: boolean
 }) => {
   const [editing, setEditing] = useState(true);
   const [selectedChart, setSelectedChart] = useState<Chart | null>(null);
 
-  const options = charts.map((chart) => ({
+  const options = charts.filter((chart) => !guessedChartIds.has(chart.id)).map((chart) => ({
     value: chart.index,
     label: chart.song,
     data: chart,
@@ -76,6 +80,7 @@ const SearchBar = ({
           value={selectedChart?.index}
           placeholder="Search Chart"
           className="h-full w-3/4"
+          disabled={disabled}
           options={options}
           onChange={(v) => {
             setEditing(false);
@@ -94,6 +99,7 @@ const SearchBar = ({
         selectedChart={selectedChart}
         setSelectedChart={setSelectedChart}
         onSubmit={onSubmit}
+        disabled={disabled}
       />
     </Flex>
   );

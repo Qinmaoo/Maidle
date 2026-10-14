@@ -6,6 +6,11 @@ import GuessTable from "./components/guessTable/GuessTable";
 import SearchBar from "./components/searchBar/SearchBar";
 import { Chart, ChartApiData } from "./types/chart";
 import { Difficulty } from "./types/difficulty";
+import { getTokyoDateKey, selectDailyChart } from "./utils/dailyPuzzle";
+import {
+  loadDailyGuesses,
+  saveDailyGuesses,
+} from "./utils/dailyGameStorage";
 
 const { Text } = Typography;
 
@@ -13,6 +18,11 @@ const MaidleGame = () => {
   const [guesses, setGuesses] = useState<Chart[]>([]);
   const [charts, setCharts] = useState<Chart[]>([]);
   const [goalGuess, setGoalGuess] = useState<Chart | null>(null);
+  const [puzzleDate] = useState(() => getTokyoDateKey());
+  const [isPuzzleExpired, setIsPuzzleExpired] = useState(false);
+  const guessedChartIds = new Set(guesses.map((guess) => guess.id));
+  const isSolved = goalGuess !== null && guessedChartIds.has(goalGuess.id);
+  const isGameLocked = isPuzzleExpired || isSolved;
 
   async function getData(): Promise<ChartApiData[]> {
     const url = "https://dp4p6x0xfi5o9.cloudfront.net/maimai/data.json";
@@ -50,6 +60,7 @@ const MaidleGame = () => {
           const version = sheet.version;
           if (difficulty === Difficulty.Master || difficulty === Difficulty.Remaster) {
             charts.push({
+              id: `${item.songId}:${difficulty}:${type}`,
               index: index++,
               song: song,
               image: image,
@@ -65,10 +76,10 @@ const MaidleGame = () => {
         });
       });
       setCharts(charts || []);
-      const newGoalGuess = charts[Math.floor(Math.random() * charts.length)];
-      setGoalGuess(newGoalGuess ?? null);
+      setGoalGuess(selectDailyChart(charts, puzzleDate));
+      setGuesses(loadDailyGuesses(charts, puzzleDate));
     });
-  }, []);
+  }, [puzzleDate]);
 
   return (
     <Flex vertical align="center" gap="middle" style={{ padding: 24 }}>
@@ -80,11 +91,30 @@ const MaidleGame = () => {
       </Flex>
       <SearchBar
         charts={charts}
-        onSubmit={(guess: Chart) => {
+        guessedChartIds={guessedChartIds}
+        disabled={isGameLocked}
+        onSubmit={(guess: Chart): boolean => {
+          if (getTokyoDateKey() !== puzzleDate) {
+            setIsPuzzleExpired(true);
+            return false;
+          }
+
+          if (isSolved || guessedChartIds.has(guess.id)) {
+            return false;
+          }
+
           const newGuesses: Chart[] = [guess, ...guesses];
           setGuesses(newGuesses);
+          saveDailyGuesses(newGuesses, puzzleDate);
+          return true;
         }}
       />
+      {isPuzzleExpired && (
+        <Text type="secondary">
+          A new daily puzzle is available. Refresh to play it.
+        </Text>
+      )}
+      {isSolved && <Text type="success">Solved in {guesses.length} guesses.</Text>}
       <GuessTable guesses={guesses} goalGuess={goalGuess} />
     </Flex>
   );

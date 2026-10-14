@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import StartScreen from './StartScreen';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+jest.mock('react-router-dom', () => ({
+  BrowserRouter: ({ children }) => children,
+  Routes: ({ children }) => children,
+  Route: ({ element }) => element,
+  useNavigate: () => jest.fn(),
+}), { virtual: true });
+
+test('renders the start screen', () => {
+  render(<StartScreen />);
+  expect(screen.getByRole('button', { name: 'Start' })).toBeInTheDocument();
 });
