@@ -45,16 +45,18 @@ const renderOption = (option: Option) => (
 const SearchBar = ({
   onSubmit,
   charts,
+  guessedChartIds,
   disabled = false,
 }: {
-  onSubmit: (guess: Chart) => void
+  onSubmit: (guess: Chart) => boolean
   charts: Chart[]
+  guessedChartIds: ReadonlySet<string>
   disabled?: boolean
 }) => {
   const [editing, setEditing] = useState(true);
   const [selectedChart, setSelectedChart] = useState<Chart | null>(null);
 
-  const options = charts.map((chart) => ({
+  const options = charts.filter((chart) => !guessedChartIds.has(chart.id)).map((chart) => ({
     value: chart.index,
     label: chart.song,
     data: chart,

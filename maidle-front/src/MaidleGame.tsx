@@ -20,6 +20,9 @@ const MaidleGame = () => {
   const [goalGuess, setGoalGuess] = useState<Chart | null>(null);
   const [puzzleDate] = useState(() => getTokyoDateKey());
   const [isPuzzleExpired, setIsPuzzleExpired] = useState(false);
+  const guessedChartIds = new Set(guesses.map((guess) => guess.id));
+  const isSolved = goalGuess !== null && guessedChartIds.has(goalGuess.id);
+  const isGameLocked = isPuzzleExpired || isSolved;
 
   async function getData(): Promise<ChartApiData[]> {
     const url = "https://dp4p6x0xfi5o9.cloudfront.net/maimai/data.json";
@@ -88,16 +91,22 @@ const MaidleGame = () => {
       </Flex>
       <SearchBar
         charts={charts}
-        disabled={isPuzzleExpired}
-        onSubmit={(guess: Chart) => {
+        guessedChartIds={guessedChartIds}
+        disabled={isGameLocked}
+        onSubmit={(guess: Chart): boolean => {
           if (getTokyoDateKey() !== puzzleDate) {
             setIsPuzzleExpired(true);
-            return;
+            return false;
+          }
+
+          if (isSolved || guessedChartIds.has(guess.id)) {
+            return false;
           }
 
           const newGuesses: Chart[] = [guess, ...guesses];
           setGuesses(newGuesses);
           saveDailyGuesses(newGuesses, puzzleDate);
+          return true;
         }}
       />
       {isPuzzleExpired && (
@@ -105,6 +114,7 @@ const MaidleGame = () => {
           A new daily puzzle is available. Refresh to play it.
         </Text>
       )}
+      {isSolved && <Text type="success">Solved in {guesses.length} guesses.</Text>}
       <GuessTable guesses={guesses} goalGuess={goalGuess} />
     </Flex>
   );

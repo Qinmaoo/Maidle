@@ -57,7 +57,13 @@ export function loadDailyGuesses(
     }
 
     const chartsById = new Map(charts.map((chart) => [chart.id, chart]));
+    const restoredGuessIds = new Set<string>();
     return storedGame.guessIds.flatMap((guessId) => {
+      if (restoredGuessIds.has(guessId)) {
+        return [];
+      }
+
+      restoredGuessIds.add(guessId);
       const chart = chartsById.get(guessId);
       return chart ? [chart] : [];
     });

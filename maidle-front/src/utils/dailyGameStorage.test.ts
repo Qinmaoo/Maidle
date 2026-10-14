@@ -70,4 +70,13 @@ describe("daily game storage", () => {
 
     expect(loadDailyGuesses(charts, "2026-10-15")).toEqual([charts[0]]);
   });
+
+  it("restores each stored chart only once", () => {
+    window.localStorage.setItem(
+      getDailyGameStorageKey("2026-10-15"),
+      JSON.stringify({ guessIds: [charts[0].id, charts[1].id, charts[0].id] }),
+    );
+
+    expect(loadDailyGuesses(charts, "2026-10-15")).toEqual([charts[0], charts[1]]);
+  });
 });

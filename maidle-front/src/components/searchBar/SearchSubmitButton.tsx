@@ -10,7 +10,7 @@ export default function SearchSubmitButton({
 }: {
   selectedChart: Chart | null
   setSelectedChart: (chart: Chart | null) => void
-  onSubmit: (guess: Chart) => void
+  onSubmit: (guess: Chart) => boolean
   disabled?: boolean
 }) {
   return (
@@ -26,8 +26,9 @@ export default function SearchSubmitButton({
       disabled={disabled}
       onClick={() => {
         if (selectedChart && !disabled) {
-          onSubmit(selectedChart);
-          setSelectedChart(null);
+          if (onSubmit(selectedChart)) {
+            setSelectedChart(null);
+          }
         }
       }}
       onMouseEnter={(e) => (e.currentTarget.style.background = "#333")}
