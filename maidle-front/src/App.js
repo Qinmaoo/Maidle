@@ -3,6 +3,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MaidleGame from './MaidleGame'; 
 import About from './About'; // Example: another page
+import StartScreen from './StartScreen';
 import { ConfigProvider } from 'antd';
 import config from './theme/light.ts';
 
@@ -26,6 +27,7 @@ function App() {
       <Router>
         <div className="App">
           <Routes>
+            <Route path="/" element={<StartScreen />} />
             <Route path="/maidle" element={<MaidleGame/>} />
             <Route path="/about" element={<About />} />
           </Routes>
